@@ -1,0 +1,38 @@
+{
+  "name": "ConvBrowser",
+  "version": "1.0.0",
+  "description": "a sb browser.",
+  "main": "main.js",
+  "keywords": [],
+  "author": "Convict.Yellow",
+  "license": "ISC",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "electron": "11.3.0",
+    "electron-builder": "^22.10.5"
+  },
+  "build": {
+    "appId": "com.example.app",
+    "directories": {
+      "output": "target"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ],
+      "icon": "icon/app.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

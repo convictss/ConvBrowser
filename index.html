@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';"/>
+    <script src="./js/jquery-2.0.3.min.js"></script>
+    <script src="./js/index.js"></script>
+</head>
+<style>
+    body, iframe {
+        overflow-x: hidden;
+    }
+    button {
+        width: auto;
+    }
+    iframe {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 40px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+    input {
+        width: 80%;
+    }
+</style>
+<body>
+<div id="nav">
+    <button><</button>
+    <button>></button>
+    <input type="text" id="urlInput"/>
+    <button id="enter">Enter</button>
+</div>
+<!--<webview src="https://www.baidu.com" style="width:400px; height:300px" ></webview>-->
+<iframe id="mainWindow" src="https://www.baidu.com" t></iframe>
+</body>
+</html>
