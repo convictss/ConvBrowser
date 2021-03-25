@@ -8,8 +8,8 @@
   "license": "ISC",
   "scripts": {
     "start": "electron .",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "unpackage": "electron-builder --dir",
+    "package": "electron-builder"
   },
   "dependencies": {
   },
