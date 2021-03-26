@@ -1,5 +1,6 @@
-const {app, BrowserWindow} = require('electron');
-
+const {app, BrowserWindow, Tray, Menu} = require('electron');
+const path = require('path');
+let appTray;
 function createWindow() {
     let win = new BrowserWindow({
         width: 1200,
@@ -10,13 +11,41 @@ function createWindow() {
             enableRemoteModule: true
         }
     });
-    require('./js/menu');
     win.loadFile('index.html');
-    win.on('closed', () => win = null);
     // win.webContents.openDevTools();
+    // require('./js/menu');
+    win.on('close', (e) => {
+        win.hide();
+        win.setSkipTaskbar(true);
+        e.preventDefault();
+    });
+
+    let trayTemplate = [
+        {
+            label: '退出', click: () => {
+                win.destroy();
+                win = null;
+                app.quit();
+            }
+        }
+    ];
+    const trayMenu = Menu.buildFromTemplate(trayTemplate);
+    appTray = new Tray(path.join(__dirname, 'icon/app.ico'));
+    appTray.setToolTip('This is my application.');
+    appTray.setContextMenu(trayMenu);
+    appTray.on('click', () => {
+        if (win.isVisible()) {
+            win.hide();
+            win.setSkipTaskbar(false);
+        } else {
+            win.show();
+            win.setSkipTaskbar(true);
+        }
+    });
+
 }
 
-app.whenReady().then(createWindow);
+app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
@@ -29,3 +58,4 @@ app.on('activate', () => {
         createWindow()
     }
 });
+
