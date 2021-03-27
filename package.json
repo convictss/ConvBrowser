@@ -2,7 +2,7 @@
   "name": "ConvBrowser",
   "version": "1.0.0",
   "description": "a sb browser.",
-  "main": "main.js",
+  "main": "js/app.js",
   "keywords": [],
   "author": "Convict.Yellow",
   "license": "ISC",
