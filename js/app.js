@@ -2,12 +2,12 @@ const {app, BrowserWindow, Menu, Tray, BrowserView, ipcMain} = require('electron
 const {Notification} = require('electron');
 const path = require('path');
 
-let mainWindow = null;
-let mainView = null;
+let win = null;
+let view = null;
 let appTray = null;
 
 function createWindow() {
-    mainWindow = new BrowserWindow({
+    win = new BrowserWindow({
         width: 1200,
         height: 600,
         webPreferences: {
@@ -16,18 +16,20 @@ function createWindow() {
             enableRemoteModule: true
         }
     });
-    mainWindow.loadFile('index.html');
-    mainWindow.on('close', (e) => {
-        mainWindow.hide();
-        mainWindow.setSkipTaskbar(true);
+    win.loadFile('index.html');
+    win.on('close', (e) => {
+        win.hide();
+        win.setSkipTaskbar(true);
         e.preventDefault();
     });
-    // mainWindow.webContents.openDevTools();
 
-    mainView = new BrowserView();
-    mainWindow.setBrowserView(mainView);
-    mainView.setBounds({x: 0, y: 40, width: 1200, height: 500});
-    mainView.webContents.loadURL('https://www.convv.top');
+    // win.webContents.openDevTools();
+
+    view = new BrowserView();
+    view.setAutoResize({width: true, height: true, horizontal: true, vertical: true});
+    win.setBrowserView(view);
+    view.setBounds({x: 0, y: 40, width: 1200, height: 600});
+    view.webContents.loadURL('https://www.convv.top');
 }
 
 function buildTrayMenu() {
@@ -47,9 +49,9 @@ function buildTrayMenu() {
         {
             label: '退出',
             click: () => {
-                if (mainWindow != null) {
-                    mainWindow.destroy();
-                    mainWindow = null;
+                if (win != null) {
+                    win.destroy();
+                    win = null;
                     app.quit();
                 }
             }
@@ -60,12 +62,12 @@ function buildTrayMenu() {
     appTray.setToolTip('This is my application.');
     appTray.setContextMenu(trayMenu);
     appTray.on('click', () => {
-        if (mainWindow.isVisible()) {
-            mainWindow.hide();
-            mainWindow.setSkipTaskbar(false);
+        if (win.isVisible()) {
+            win.hide();
+            win.setSkipTaskbar(false);
         } else {
-            mainWindow.show();
-            mainWindow.setSkipTaskbar(true);
+            win.show();
+            win.setSkipTaskbar(true);
         }
     });
 }
@@ -88,7 +90,7 @@ function buildTopMenu() {
                 {
                     label: "关闭",
                     click: () => {
-                        console.log(mainWindow)
+                        console.log(win)
                     }
                 }
             ]
@@ -124,14 +126,16 @@ app.on('activate', () => {
     }
 });
 
-ipcMain.on('toUrl', (event, url) => {
-    mainView.webContents.loadURL(url);
+ipcMain.on('toUrl', (event, args) => {
+    view.webContents.loadURL(args);
 });
 
-ipcMain.on('back', () => {
-    mainView.webContents.goBack();
+ipcMain.on('back', (event, args) => {
+    if (view.webContents.canGoBack()) view.webContents.goBack();
+    event.reply('flushUrl', view.webContents.getURL());
 });
 
-ipcMain.on('forward', () => {
-    mainView.webContents.goForward();
+ipcMain.on('forward', (event, args) => {
+    if (view.webContents.canGoForward()) view.webContents.goForward();
+    event.reply('flushUrl', view.webContents.getURL());
 });
