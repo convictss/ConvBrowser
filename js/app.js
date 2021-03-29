@@ -1,8 +1,9 @@
-const {app, BrowserWindow, Menu, Tray} = require('electron');
+const {app, BrowserWindow, Menu, Tray, BrowserView, ipcMain} = require('electron');
 const {Notification} = require('electron');
 const path = require('path');
 
 let mainWindow = null;
+let mainView = null;
 let appTray = null;
 
 function createWindow() {
@@ -22,6 +23,11 @@ function createWindow() {
         e.preventDefault();
     });
     // mainWindow.webContents.openDevTools();
+
+    mainView = new BrowserView();
+    mainWindow.setBrowserView(mainView);
+    mainView.setBounds({x: 0, y: 40, width: 1200, height: 500});
+    mainView.webContents.loadURL('https://www.convv.top');
 }
 
 function buildTrayMenu() {
@@ -108,13 +114,24 @@ app.whenReady()
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
-        app.quit()
+        app.quit();
     }
 });
 
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow()
+        createWindow();
     }
 });
 
+ipcMain.on('toUrl', (event, url) => {
+    mainView.webContents.loadURL(url);
+});
+
+ipcMain.on('back', () => {
+    mainView.webContents.goBack();
+});
+
+ipcMain.on('forward', () => {
+    mainView.webContents.goForward();
+});
