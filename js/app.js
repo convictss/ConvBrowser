@@ -2,6 +2,7 @@ const {app, BrowserWindow, Menu, Tray, BrowserView, ipcMain} = require('electron
 const {Notification} = require('electron');
 const path = require('path');
 
+const initUrl = 'https://www.convv.top';
 let win = null;
 let view = null;
 let appTray = null;
@@ -26,10 +27,13 @@ function createWindow() {
     // win.webContents.openDevTools();
 
     view = new BrowserView();
-    view.setAutoResize({width: true, height: true, horizontal: true, vertical: true});
     win.setBrowserView(view);
     view.setBounds({x: 0, y: 40, width: 1200, height: 600});
-    view.webContents.loadURL('https://www.convv.top');
+    view.setAutoResize({width: true, height: true, horizontal: true, vertical: true});
+    view.webContents.loadURL(initUrl);
+    view.webContents.on('did-finish-load', () => {
+        win.webContents.send('flushUrl', view.webContents.getURL());
+    });
 }
 
 function buildTrayMenu() {
@@ -132,10 +136,11 @@ ipcMain.on('toUrl', (event, args) => {
 
 ipcMain.on('back', (event, args) => {
     if (view.webContents.canGoBack()) view.webContents.goBack();
-    event.reply('flushUrl', view.webContents.getURL());
+    // event.reply('flushUrl', view.webContents.getURL());
 });
 
 ipcMain.on('forward', (event, args) => {
     if (view.webContents.canGoForward()) view.webContents.goForward();
-    event.reply('flushUrl', view.webContents.getURL());
+    // event.reply('flushUrl', view.webContents.getURL());
 });
+
