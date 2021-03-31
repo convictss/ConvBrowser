@@ -3,6 +3,7 @@ const {Notification} = require('electron');
 const path = require('path');
 
 const initUrl = 'https://www.convv.top';
+const fixedTxt = 'I am a browser which built by a dog.';
 let win = null;
 let view = null;
 let appTray = null;
@@ -38,14 +39,14 @@ function createWindow() {
 
 function buildTrayMenu() {
     let trayTemplate = [
-        {label: 'Item3', type: 'radio', checked: true},
-        {label: 'Item4', type: 'radio'},
+        // {label: 'Item3', type: 'radio', checked: true},
+        // {label: 'Item4', type: 'radio'},
         {
             label: '关于',
             click: () => {
                 let notification = {
                     title: 'ConvBrowser Notification',
-                    body: process['env']['npm_package_description']
+                    body: fixedTxt
                 };
                 new Notification(notification).show();
             }
@@ -62,8 +63,8 @@ function buildTrayMenu() {
         }
     ];
     let trayMenu = Menu.buildFromTemplate(trayTemplate);
-    appTray = new Tray(path.join(__dirname, '../icon/app.ico'));
-    appTray.setToolTip('This is my application.');
+    appTray = new Tray(path.join(__dirname, '../icon/app64.ico'));
+    appTray.setToolTip(fixedTxt);
     appTray.setContextMenu(trayMenu);
     appTray.on('click', () => {
         if (win.isVisible()) {
