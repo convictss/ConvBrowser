@@ -29,7 +29,7 @@ function createWindow() {
 
     view = new BrowserView();
     win.setBrowserView(view);
-    view.setBounds({x: 0, y: 40, width: 1200, height: 600});
+    view.setBounds({x: 0, y: 30, width: 1200, height: 512});
     view.setAutoResize({width: true, height: true, horizontal: true, vertical: true});
     view.webContents.loadURL(initUrl);
     view.webContents.on('did-finish-load', () => {
