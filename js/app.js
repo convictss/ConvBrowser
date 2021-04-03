@@ -1,5 +1,4 @@
-const {app, BrowserWindow, Menu, Tray, BrowserView, ipcMain} = require('electron');
-const {Notification} = require('electron');
+const {app, BrowserWindow, Menu, Tray, BrowserView, ipcMain, Notification, globalShortcut} = require('electron');
 const path = require('path');
 
 const initUrl = 'https://www.convv.top';
@@ -113,10 +112,23 @@ function buildTopMenu() {
     Menu.setApplicationMenu(null);
 }
 
+function registerShortcut() {
+    globalShortcut.register('CommandOrControl+Alt+\\', () => {
+        if (win.isVisible()) {
+            win.hide();
+            win.setSkipTaskbar(false);
+        } else {
+            win.show();
+            win.setSkipTaskbar(true);
+        }
+    });
+}
+
 app.whenReady()
     .then(createWindow)
     .then(buildTopMenu)
     .then(buildTrayMenu)
+    .then(registerShortcut)
 ;
 
 app.on('window-all-closed', () => {
