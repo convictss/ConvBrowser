@@ -1,16 +1,27 @@
 const {app, BrowserWindow, Menu, Tray, BrowserView, ipcMain, Notification, globalShortcut} = require('electron');
 const path = require('path');
 
-const initUrl = 'https://www.convv.top';
+const initUrl = 'https://music.163.com';
 const fixedTxt = 'I am a browser which built by a dog.';
 let win = null;
 let view = null;
 let appTray = null;
 
+let globalConfig = {
+    closeEqHide: true
+};
+
+function parseParams() {
+    if (process.env.npm_lifecycle_event === 'start-dev') {
+        globalConfig.closeEqHide = false;
+    }
+}
+
 function createWindow() {
     win = new BrowserWindow({
         width: 1200,
         height: 600,
+        icon: 'icon/app64.ico',
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
@@ -19,9 +30,14 @@ function createWindow() {
     });
     win.loadFile('index.html');
     win.on('close', (e) => {
-        win.hide();
-        win.setSkipTaskbar(true);
-        e.preventDefault();
+        if (globalConfig.closeEqHide) {
+            win.hide();
+            win.setSkipTaskbar(true);
+            e.preventDefault();
+        } else {
+            win = null;
+            app.quit();
+        }
     });
 
     // win.webContents.openDevTools();
@@ -125,6 +141,7 @@ function registerShortcut() {
 }
 
 app.whenReady()
+    .then(parseParams)
     .then(createWindow)
     .then(buildTopMenu)
     .then(buildTrayMenu)
